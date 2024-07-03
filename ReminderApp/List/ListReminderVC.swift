@@ -85,8 +85,6 @@ class ListReminderVC: BaseVC {
     }
     
     private func configureNavigationBar(){
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
         navigationItem.title = "전체"
         navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : UIColor.systemBlue.cgColor]
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
@@ -164,5 +162,3 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
         present(vc, animated: true)
     }
 }
-
-
