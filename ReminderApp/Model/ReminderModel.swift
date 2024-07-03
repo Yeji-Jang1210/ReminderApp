@@ -32,4 +32,9 @@ class Reminder: Object {
         formatter.dateFormat = "yyyy. MM .dd"
         return formatter.string(from: date)
     }
+    
+    var hashTaggedString: String {
+        guard let tag else { return "" }
+        return "#\(tag)"
+    }
 }

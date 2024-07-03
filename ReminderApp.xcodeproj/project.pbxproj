@@ -22,6 +22,7 @@
 		B85FACB52C3535AD00DD1FA7 /* TagVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACB42C3535AD00DD1FA7 /* TagVC.swift */; };
 		B85FACB72C3535B600DD1FA7 /* PriorityVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACB62C3535B600DD1FA7 /* PriorityVC.swift */; };
 		B85FACB92C353CB600DD1FA7 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACB82C353CB600DD1FA7 /* Date+Extension.swift */; };
+		B85FACBB2C35888C00DD1FA7 /* DetailReminderInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACBA2C35888C00DD1FA7 /* DetailReminderInfoVC.swift */; };
 		B871F26F2C34125E00C6CEDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871F26E2C34125E00C6CEDE /* AppDelegate.swift */; };
 		B871F2712C34125E00C6CEDE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871F2702C34125E00C6CEDE /* SceneDelegate.swift */; };
 		B871F2732C34125E00C6CEDE /* ReminderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871F2722C34125E00C6CEDE /* ReminderVC.swift */; };
@@ -44,6 +45,7 @@
 		B85FACB42C3535AD00DD1FA7 /* TagVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagVC.swift; sourceTree = "<group>"; };
 		B85FACB62C3535B600DD1FA7 /* PriorityVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityVC.swift; sourceTree = "<group>"; };
 		B85FACB82C353CB600DD1FA7 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		B85FACBA2C35888C00DD1FA7 /* DetailReminderInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailReminderInfoVC.swift; sourceTree = "<group>"; };
 		B871F26B2C34125E00C6CEDE /* ReminderApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReminderApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B871F26E2C34125E00C6CEDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B871F2702C34125E00C6CEDE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 			children = (
 				B85FACA82C343AD300DD1FA7 /* Cell */,
 				B85FAC932C34157C00DD1FA7 /* ListReminderVC.swift */,
+				B85FACBA2C35888C00DD1FA7 /* DetailReminderInfoVC.swift */,
 			);
 			path = List;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				B871F2732C34125E00C6CEDE /* ReminderVC.swift in Sources */,
 				B85FAC972C34158B00DD1FA7 /* BaseVC.swift in Sources */,
 				B85FACA52C34262600DD1FA7 /* TaskTableViewCell.swift in Sources */,
+				B85FACBB2C35888C00DD1FA7 /* DetailReminderInfoVC.swift in Sources */,
 				B85FACB52C3535AD00DD1FA7 /* TagVC.swift in Sources */,
 				B85FAC922C34157300DD1FA7 /* AddedReminderVC.swift in Sources */,
 				B85FACB92C353CB600DD1FA7 /* Date+Extension.swift in Sources */,

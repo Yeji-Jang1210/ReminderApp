@@ -98,7 +98,6 @@ class ListReminderVC: BaseVC {
     private func configureTableView(){
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.allowsSelection = false
         tableView.separatorStyle = .none
         tableView.register(ReminderTableViewCell.self, forCellReuseIdentifier: ReminderTableViewCell.identifier)
     }
@@ -157,6 +156,12 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
         }
         delete.backgroundColor = .systemRed
         return UISwipeActionsConfiguration(actions:[delete])
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = DetailReminderInfoVC()
+        vc.reminder = list[indexPath.row]
+        present(vc, animated: true)
     }
 }
 
