@@ -10,13 +10,18 @@ import SnapKit
 import RealmSwift
 import Toast
 
+protocol PassDataDelegate {
+    func passDateValue(_ date: Date)
+    func passTagValue(_ tag: String?)
+    func passPriorityValue(_ priority: Priority)
+}
+
 final class AddedReminderVC: BaseVC {
     
     enum SectionType: Int, CaseIterable {
         case deadLine
         case tag
         case priority
-        case image
         
         var title: String {
             switch self {
@@ -26,8 +31,6 @@ final class AddedReminderVC: BaseVC {
                 return "태그"
             case .priority:
                 return "우선순위"
-            case .image:
-                return "이미지 추가"
             }
         }
     }
@@ -73,8 +76,14 @@ final class AddedReminderVC: BaseVC {
         return object
     }()
     
-    let realm = try! Realm()
+    //MARK: - property
     
+    let realm = try! Realm()
+    var deadLineDate: Date?
+    var tag: String?
+    var priority: Priority?
+    
+    //MARK: - method
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -160,7 +169,8 @@ final class AddedReminderVC: BaseVC {
             return
         }
         
-        let reminder = Reminder(title: text, content: contentTextView.text)
+        let reminder = Reminder(title: text, content: contentTextView.text,
+                                deadline: deadLineDate, tag: tag, priority: priority?.rawValue)
         
         //default.realm에 레코드 추가
         do {
@@ -209,15 +219,41 @@ extension AddedReminderVC: UITableViewDelegate, UITableViewDataSource {
         }
         
         cell.setTitle(title: title)
+        
+        switch indexPath.section {
+        case 0:
+            cell.detailTextLabel?.text = deadLineDate?.getString(format: "yyyy. MM. dd")
+        case 1:
+            cell.detailTextLabel?.text = tag
+        case 2:
+            cell.detailTextLabel?.text = priority?.title
+        default:
+            break
+        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            //마감일 VC 띄우기
+        switch indexPath.section {
+        case 0:
+            let vc = DeadLinePickerVC()
+            vc.delegate = self
+            vc.setData(deadLineDate)
+            navigationController?.pushViewController(vc, animated: true)
+        case 1:
+            let vc = TagVC()
+            vc.delegate = self
+            vc.setData(tag)
+            navigationController?.pushViewController(vc, animated: true)
+        case 2:
+            let vc = PriorityVC()
+            vc.delegate = self
+            vc.setData(priority)
+            navigationController?.pushViewController(vc, animated: true)
+        default:
+            return
         }
     }
-    
 }
 
 extension AddedReminderVC: UITextViewDelegate {
@@ -228,4 +264,23 @@ extension AddedReminderVC: UITextViewDelegate {
             contentTextViewPlaceholder.isHidden = false
         }
     }
+}
+
+extension AddedReminderVC: PassDataDelegate {
+    func passDateValue(_ date: Date) {
+        deadLineDate = date
+        tableView.reloadData()
+    }
+    
+    func passTagValue(_ tag: String?) {
+        self.tag = tag
+        tableView.reloadData()
+    }
+    
+    func passPriorityValue(_ priority: Priority) {
+        self.priority = priority
+        tableView.reloadData()
+    }
+    
+    
 }

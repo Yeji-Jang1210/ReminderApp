@@ -18,6 +18,10 @@
 		B85FACA72C34293100DD1FA7 /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACA62C34293100DD1FA7 /* BaseTableViewCell.swift */; };
 		B85FACAA2C343B4B00DD1FA7 /* ReminderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACA92C343B4B00DD1FA7 /* ReminderTableViewCell.swift */; };
 		B85FACAD2C34443A00DD1FA7 /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = B85FACAC2C34443A00DD1FA7 /* Toast */; };
+		B85FACB32C3535A400DD1FA7 /* DeadLinePickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACB22C3535A400DD1FA7 /* DeadLinePickerVC.swift */; };
+		B85FACB52C3535AD00DD1FA7 /* TagVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACB42C3535AD00DD1FA7 /* TagVC.swift */; };
+		B85FACB72C3535B600DD1FA7 /* PriorityVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACB62C3535B600DD1FA7 /* PriorityVC.swift */; };
+		B85FACB92C353CB600DD1FA7 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B85FACB82C353CB600DD1FA7 /* Date+Extension.swift */; };
 		B871F26F2C34125E00C6CEDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871F26E2C34125E00C6CEDE /* AppDelegate.swift */; };
 		B871F2712C34125E00C6CEDE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871F2702C34125E00C6CEDE /* SceneDelegate.swift */; };
 		B871F2732C34125E00C6CEDE /* ReminderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871F2722C34125E00C6CEDE /* ReminderVC.swift */; };
@@ -36,6 +40,10 @@
 		B85FACA42C34262600DD1FA7 /* TaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		B85FACA62C34293100DD1FA7 /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		B85FACA92C343B4B00DD1FA7 /* ReminderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTableViewCell.swift; sourceTree = "<group>"; };
+		B85FACB22C3535A400DD1FA7 /* DeadLinePickerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadLinePickerVC.swift; sourceTree = "<group>"; };
+		B85FACB42C3535AD00DD1FA7 /* TagVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagVC.swift; sourceTree = "<group>"; };
+		B85FACB62C3535B600DD1FA7 /* PriorityVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityVC.swift; sourceTree = "<group>"; };
+		B85FACB82C353CB600DD1FA7 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		B871F26B2C34125E00C6CEDE /* ReminderApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReminderApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B871F26E2C34125E00C6CEDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B871F2702C34125E00C6CEDE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				B85FACA22C34258B00DD1FA7 /* TableViewCell+Extension.swift */,
+				B85FACB82C353CB600DD1FA7 /* Date+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -105,6 +114,16 @@
 				B85FACA92C343B4B00DD1FA7 /* ReminderTableViewCell.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		B85FACB12C35359A00DD1FA7 /* TaskVC */ = {
+			isa = PBXGroup;
+			children = (
+				B85FACB22C3535A400DD1FA7 /* DeadLinePickerVC.swift */,
+				B85FACB42C3535AD00DD1FA7 /* TagVC.swift */,
+				B85FACB62C3535B600DD1FA7 /* PriorityVC.swift */,
+			);
+			path = TaskVC;
 			sourceTree = "<group>";
 		};
 		B871F2622C34125E00C6CEDE = {
@@ -154,6 +173,7 @@
 		B871F2832C3413C200C6CEDE /* Add */ = {
 			isa = PBXGroup;
 			children = (
+				B85FACB12C35359A00DD1FA7 /* TaskVC */,
 				B85FAC9E2C34247600DD1FA7 /* Cell */,
 				B85FAC912C34157300DD1FA7 /* AddedReminderVC.swift */,
 			);
@@ -253,9 +273,13 @@
 				B871F2732C34125E00C6CEDE /* ReminderVC.swift in Sources */,
 				B85FAC972C34158B00DD1FA7 /* BaseVC.swift in Sources */,
 				B85FACA52C34262600DD1FA7 /* TaskTableViewCell.swift in Sources */,
+				B85FACB52C3535AD00DD1FA7 /* TagVC.swift in Sources */,
 				B85FAC922C34157300DD1FA7 /* AddedReminderVC.swift in Sources */,
+				B85FACB92C353CB600DD1FA7 /* Date+Extension.swift in Sources */,
 				B85FACA72C34293100DD1FA7 /* BaseTableViewCell.swift in Sources */,
+				B85FACB72C3535B600DD1FA7 /* PriorityVC.swift in Sources */,
 				B871F26F2C34125E00C6CEDE /* AppDelegate.swift in Sources */,
+				B85FACB32C3535A400DD1FA7 /* DeadLinePickerVC.swift in Sources */,
 				B85FACAA2C343B4B00DD1FA7 /* ReminderTableViewCell.swift in Sources */,
 				B871F2712C34125E00C6CEDE /* SceneDelegate.swift in Sources */,
 				B85FACA32C34258B00DD1FA7 /* TableViewCell+Extension.swift in Sources */,

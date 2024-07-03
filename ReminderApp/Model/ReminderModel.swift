@@ -13,12 +13,16 @@ class Reminder: Object {
     @Persisted var title: String
     @Persisted var content: String?
     @Persisted var deadline: Date?
+    @Persisted var tag: String?
+    @Persisted var prioirty: Int?
     
-    convenience init(title: String, content: String?, deadline: Date? = Date()) {
+    convenience init(title: String, content: String?, deadline: Date? = Date(), tag: String? = nil, priority: Int? = nil) {
         self.init()
         self.title = title
         self.content = content
         self.deadline = deadline
+        self.tag = tag
+        self.prioirty = priority
     }
     
     var formattedDate: String {

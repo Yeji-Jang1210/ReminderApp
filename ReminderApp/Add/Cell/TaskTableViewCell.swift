@@ -11,9 +11,10 @@ import SnapKit
 class TaskTableViewCell: BaseTableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         accessoryType = .disclosureIndicator
         textLabel?.font = .systemFont(ofSize: 12)
+        detailTextLabel?.font = .systemFont(ofSize: 12)
     }
 
     public func setTitle(title: String){
