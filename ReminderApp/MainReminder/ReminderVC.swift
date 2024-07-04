@@ -107,7 +107,8 @@ final class ReminderVC: BaseVC {
         super.configureLayout()
         
         collectionView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalToSuperview()
+            make.horizontalEdges.equalToSuperview()
             make.bottom.equalTo(addReminderButton.snp.top).offset(-12)
         }
         
