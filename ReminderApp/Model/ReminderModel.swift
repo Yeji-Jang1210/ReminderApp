@@ -15,14 +15,18 @@ class Reminder: Object {
     @Persisted var deadline: Date?
     @Persisted var tag: String?
     @Persisted var prioirty: Int?
+    @Persisted var isComplete: Bool
+    @Persisted var isFlag: Bool
     
-    convenience init(title: String, content: String?, deadline: Date? = Date(), tag: String? = nil, priority: Int? = nil) {
+    convenience init(title: String, content: String?, deadline: Date? = Date(), tag: String? = nil, priority: Int? = nil, isComplete: Bool = false, isFlag: Bool = false) {
         self.init()
         self.title = title
         self.content = content
         self.deadline = deadline
         self.tag = tag
         self.prioirty = priority
+        self.isComplete = isComplete
+        self.isFlag = isFlag
     }
     
     var formattedDate: String {

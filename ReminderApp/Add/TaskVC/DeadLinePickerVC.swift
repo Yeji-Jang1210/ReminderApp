@@ -14,7 +14,7 @@ final class DeadLinePickerVC: BaseVC {
         object.locale = Locale(identifier: "ko-KR")
         object.date = Date()
         object.preferredDatePickerStyle = .wheels
-        
+        object.datePickerMode = .date
         return object
     }()
     

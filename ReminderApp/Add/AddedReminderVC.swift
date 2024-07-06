@@ -14,6 +14,7 @@ protocol PassDataDelegate {
     func passDateValue(_ date: Date)
     func passTagValue(_ tag: String?)
     func passPriorityValue(_ priority: Priority)
+    func passImageValue(_ image: UIImage?)
 }
 
 final class AddedReminderVC: BaseVC {
@@ -22,6 +23,7 @@ final class AddedReminderVC: BaseVC {
         case deadLine
         case tag
         case priority
+        case image
         
         var title: String {
             switch self {
@@ -31,6 +33,8 @@ final class AddedReminderVC: BaseVC {
                 return "태그"
             case .priority:
                 return "우선순위"
+            case .image:
+                return "이미지추가"
             }
         }
     }
@@ -78,14 +82,21 @@ final class AddedReminderVC: BaseVC {
     
     //MARK: - property
     
-    let realm = try! Realm()
+    let repository = ReminderRepository()
     var deadLineDate: Date?
     var tag: String?
     var priority: Priority?
+    var image: UIImage?
+    var onDismiss: (() -> Void)?
     
     //MARK: - method
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        onDismiss?()
     }
     
     override func configureHierarchy() {
@@ -173,13 +184,18 @@ final class AddedReminderVC: BaseVC {
                                 deadline: deadLineDate, tag: tag, priority: priority?.rawValue)
         
         //default.realm에 레코드 추가
-        do {
-            try realm.write {
-                realm.add(reminder)
+        repository.addItem(item: reminder) { [weak self] error in
+            guard let self else { return }
+            guard error == nil else {
+                showAlert(title: "오류", message: "저장하는데 오류가 생겼습니다.", ok: "확인"){ }
+                return
             }
+            
+            if let image = image {
+                saveImageToDocument(image: image, filename: reminder.id.stringValue)
+            }
+            
             dismiss(animated: true)
-        } catch {
-            showAlert(title: "오류", message: "저장하는데 오류가 생겼습니다.", ok: "확인"){ }
         }
     }
     
@@ -227,6 +243,8 @@ extension AddedReminderVC: UITableViewDelegate, UITableViewDataSource {
             cell.detailTextLabel?.text = tag
         case 2:
             cell.detailTextLabel?.text = priority?.title
+        case 3:
+            cell.detailTextLabel?.text = image != nil ? "이미지 추가됨" : ""
         default:
             break
         }
@@ -250,6 +268,11 @@ extension AddedReminderVC: UITableViewDelegate, UITableViewDataSource {
             vc.delegate = self
             vc.setData(priority)
             navigationController?.pushViewController(vc, animated: true)
+        case 3:
+            let vc = ReminderImageVC()
+            vc.delegate = self
+            vc.setData(image)
+            navigationController?.pushViewController(vc, animated: true)
         default:
             return
         }
@@ -267,6 +290,11 @@ extension AddedReminderVC: UITextViewDelegate {
 }
 
 extension AddedReminderVC: PassDataDelegate {
+    func passImageValue(_ image: UIImage?) {
+        self.image = image
+        tableView.reloadData()
+    }
+    
     func passDateValue(_ date: Date) {
         deadLineDate = date
         tableView.reloadData()
@@ -281,6 +309,4 @@ extension AddedReminderVC: PassDataDelegate {
         self.priority = priority
         tableView.reloadData()
     }
-    
-    
 }

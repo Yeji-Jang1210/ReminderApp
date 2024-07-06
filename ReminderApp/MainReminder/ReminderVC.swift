@@ -7,59 +7,7 @@
 
 import UIKit
 import SnapKit
-
-enum Category: Int, CaseIterable {
-    case today
-    case expected
-    case all
-    case flag
-    case completed
-    
-    var title: String {
-        switch self {
-        case .today:
-            return "오늘"
-        case .expected:
-            return "예정"
-        case .all:
-            return "전체"
-        case .flag:
-            return "깃발 표시"
-        case .completed:
-            return "완료됨"
-        }
-    }
-    
-    var tintColor: UIColor {
-        switch self {
-        case .today:
-            return .systemBlue
-        case .expected:
-            return .systemRed
-        case .all:
-            return .systemGray
-        case .flag:
-            return .systemYellow
-        case .completed:
-            return .systemGray
-        }
-    }
-    
-    var image: UIImage? {
-        switch self {
-        case .today:
-            return UIImage(systemName: "note.text")
-        case .expected:
-            return UIImage(systemName: "calendar")
-        case .all:
-            return UIImage(systemName: "tray.fill")
-        case .flag:
-            return UIImage(systemName: "flag.fill")
-        case .completed:
-            return UIImage(systemName: "checkmark")
-        }
-    }
-}
+import RealmSwift
 
 final class ReminderVC: BaseVC {
     
@@ -92,8 +40,17 @@ final class ReminderVC: BaseVC {
         return object
     }()
     
+    let repository = ReminderRepository()
+    lazy var list = repository.fetch()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : UIColor.lightGray.cgColor]
+        collectionView.reloadData()
     }
     
     override func configureHierarchy() {
@@ -133,8 +90,7 @@ final class ReminderVC: BaseVC {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.title = "전체"
-        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : UIColor.lightGray.cgColor]
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "calendar"),
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(rightBarButtonTapped))
@@ -148,14 +104,18 @@ final class ReminderVC: BaseVC {
     
     @objc 
     func rightBarButtonTapped(){
-        let vc = ListReminderVC()
-        navigationController?.pushViewController(vc, animated: true)
+        
     }
     
     @objc
     func addButtonTapped(){
-        let vc = UINavigationController(rootViewController: AddedReminderVC())
-        present(vc, animated: true)
+        let vc = AddedReminderVC()
+        vc.onDismiss = {
+            self.collectionView.reloadData()
+        }
+        
+        let nvc = UINavigationController(rootViewController: vc)
+        present(nvc, animated: true)
     }
 }
 
@@ -167,7 +127,7 @@ extension ReminderVC: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCollectionViewCell.identifier, for: indexPath) as! CategoryCollectionViewCell
         if let category = Category(rawValue: indexPath.row) {
-            cell.setData(category, count: 0)
+            cell.setData(category, count: repository.fetchFilterForCategory(category).count)
         }
         return cell
     }
@@ -178,8 +138,10 @@ extension ReminderVC: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row == 2 {
+        if let category = Category(rawValue: indexPath.row) {
             let vc = ListReminderVC()
+            vc.category = category
+            vc.list = repository.fetchFilterForCategory(category)
             navigationController?.pushViewController(vc, animated: true)
         }
     }

@@ -34,17 +34,23 @@ class ListReminderVC: BaseVC {
         }
     }
     
+    lazy var searchBar: UISearchBar = {
+        let object = UISearchBar()
+        object.placeholder = "제목으로 검색하세요"
+        object.delegate = self
+        return object
+    }()
+    
     let tableView: UITableView = {
         let object = UITableView()
         object.backgroundColor = .clear
         return object
     }()
     
-    let realm = try! Realm()
-    lazy var list = realm.objects(Reminder.self)
-    
+    var repository = ReminderRepository()
+    var category: Category!
+    var list: Results<Reminder>!
     var filteredList: Results<Reminder>!
-    
     var filterType: FilterType? {
         didSet {
             if let type = filterType {
@@ -56,7 +62,6 @@ class ListReminderVC: BaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        list = realm.objects(Reminder.self)
         filteredList = list
     }
     
@@ -67,14 +72,21 @@ class ListReminderVC: BaseVC {
     
     override func configureHierarchy() {
         super.configureHierarchy()
+        view.addSubview(searchBar)
         view.addSubview(tableView)
     }
     
     override func configureLayout() {
         super.configureLayout()
         
+        searchBar.snp.makeConstraints { make in
+            make.horizontalEdges.top.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(44)
+        }
+        
         tableView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(searchBar.snp.bottom)
+            make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
@@ -85,10 +97,10 @@ class ListReminderVC: BaseVC {
     }
     
     private func configureNavigationBar(){
+        navigationItem.title = category.title
+        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : category.tintColor]
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
-        navigationItem.title = "전체"
-        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : UIColor.systemBlue.cgColor]
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
                                                             style: .plain,
                                                             target: self,
@@ -124,7 +136,9 @@ class ListReminderVC: BaseVC {
     
     @objc
     func checkButtonTapped(_ sender: UIButton){
-        sender.isSelected.toggle()
+        repository.updateComplete(item: list[sender.tag])
+        
+        tableView.reloadRows(at: [IndexPath(row: sender.tag, section: 0)], with: .automatic)
     }
 }
 
@@ -139,7 +153,8 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReminderTableViewCell.identifier, for: indexPath) as! ReminderTableViewCell
-        cell.fetchData(filteredList[indexPath.row])
+        let item = filteredList[indexPath.row]
+        cell.fetchData(item, image: loadImageToDocument(filename: item.id.stringValue))
         cell.checkButton.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
         cell.checkButton.tag = indexPath.row
         return cell
@@ -148,19 +163,38 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let delete = UIContextualAction(style: .normal, title: "삭제") { [self] (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
             
-            try! self.realm.write {
-                realm.delete(self.filteredList[indexPath.row])
-            }
+            let data =  list[indexPath.row]
+            removeImageFromDocument(filename: list[indexPath.row].id.stringValue)
+            repository.deleteItem(item: data)
             tableView.reloadData()
             success(true)
         }
         delete.backgroundColor = .systemRed
-        return UISwipeActionsConfiguration(actions:[delete])
+        
+        let flag = UIContextualAction(style: .normal, title: "깃발") { [self] (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
+            
+            repository.updateFlag(item: list[indexPath.row])
+            tableView.reloadRows(at: [IndexPath(row: indexPath.row, section: 0)], with: .automatic)
+            success(true)
+        }
+        flag.backgroundColor = .systemYellow
+        return UISwipeActionsConfiguration(actions:[delete, flag])
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = DetailReminderInfoVC()
-        vc.reminder = list[indexPath.row]
+        vc.reminder = list?[indexPath.row]
         present(vc, animated: true)
+    }
+}
+
+extension ListReminderVC: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        let filtered = list.where {
+            $0.title.contains(searchText, options: .caseInsensitive)
+        }
+        
+        filteredList = searchText.isEmpty ? list : filtered
+        tableView.reloadData()
     }
 }
