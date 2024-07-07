@@ -136,9 +136,10 @@ class ListReminderVC: BaseVC {
     
     @objc
     func checkButtonTapped(_ sender: UIButton){
-        repository.updateComplete(item: list[sender.tag])
-        
-        tableView.reloadRows(at: [IndexPath(row: sender.tag, section: 0)], with: .automatic)
+        repository.updateComplete(item: filteredList[sender.tag]){ [weak self] in
+            guard let self else { return }
+            tableView.reloadRows(at: [IndexPath(row: sender.tag, section: 0)], with: .automatic)
+        }
     }
 }
 
@@ -153,7 +154,9 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReminderTableViewCell.identifier, for: indexPath) as! ReminderTableViewCell
+        
         let item = filteredList[indexPath.row]
+        print(item.id.stringValue, item.title)
         cell.fetchData(item, image: loadImageToDocument(filename: item.id.stringValue))
         cell.checkButton.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
         cell.checkButton.tag = indexPath.row
@@ -161,11 +164,11 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let item = filteredList[indexPath.row]
+        
         let delete = UIContextualAction(style: .normal, title: "삭제") { [self] (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
-            
-            let data =  list[indexPath.row]
-            removeImageFromDocument(filename: list[indexPath.row].id.stringValue)
-            repository.deleteItem(item: data)
+            removeImageFromDocument(filename: item.id.stringValue)
+            repository.deleteItem(item: item)
             tableView.reloadData()
             success(true)
         }
@@ -173,9 +176,11 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
         
         let flag = UIContextualAction(style: .normal, title: "깃발") { [self] (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
             
-            repository.updateFlag(item: list[indexPath.row])
-            tableView.reloadRows(at: [IndexPath(row: indexPath.row, section: 0)], with: .automatic)
-            success(true)
+            repository.updateFlag(item: item){ [weak self] in
+                guard let self else { return }
+                tableView.reloadRows(at: [IndexPath(row: indexPath.row, section: 0)], with: .automatic)
+                success(true)
+            }
         }
         flag.backgroundColor = .systemYellow
         return UISwipeActionsConfiguration(actions:[delete, flag])
@@ -183,14 +188,14 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = DetailReminderInfoVC()
-        vc.reminder = list?[indexPath.row]
+        vc.reminder = filteredList?[indexPath.row]
         present(vc, animated: true)
     }
 }
 
 extension ListReminderVC: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        let filtered = list.where {
+        let filtered = filteredList.where {
             $0.title.contains(searchText, options: .caseInsensitive)
         }
         

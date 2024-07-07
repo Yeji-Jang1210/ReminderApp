@@ -25,14 +25,13 @@ protocol ReminderRepositoryProtocol {
     
     // Read
     func fetch() -> Results<Reminder>
-    func fetchFilterForCategory(_ filter: Category) -> Results<Reminder>
     
     // Delete
     func deleteItem(item: Reminder)
     
     //update
-    func updateComplete(item: Reminder)
-    func updateFlag(item: Reminder)
+    func updateComplete(item: Reminder, completion: @escaping (()->Void))
+    func updateFlag(item: Reminder, completion: @escaping (()->Void))
 }
 
 class ReminderRepository: ReminderRepositoryProtocol {
@@ -62,12 +61,12 @@ class ReminderRepository: ReminderRepositoryProtocol {
     
     func fetchFilterForCategory(_ filter: Category) -> Results<Reminder> {
         let list = fetch()
-        let (startDate, endDate) = getTodayStartAndEnd()
-        
+
         switch filter {
         case .today:
-            return list.filter("deadline >= %@ AND deadline <= %@", startDate, endDate)
+            return fetchFilterForDate()
         case .expected:
+            let (startDate, endDate) = getSpecificStartAndEndDate()
             return list.filter("deadline > %@", endDate)
         case .all:
             return list
@@ -78,21 +77,30 @@ class ReminderRepository: ReminderRepositoryProtocol {
         }
     }
     
-    func updateComplete(item: Reminder){
+    func fetchFilterForDate(_ date: Date = Date()) -> Results<Reminder> {
+        let list = fetch()
+        let (startDate, endDate) = getSpecificStartAndEndDate(date: date)
+        
+        return list.filter("deadline >= %@ AND deadline <= %@", startDate, endDate)
+    }
+    
+    func updateComplete(item: Reminder, completion: @escaping (()->Void)){
         try! realm.write {
             item.isComplete.toggle()
+            completion()
         }
     }
     
-    func updateFlag(item: Reminder){
+    func updateFlag(item: Reminder, completion: @escaping (()->Void)){
         try! realm.write {
             item.isFlag.toggle()
+            completion()
         }
     }
     
-    private func getTodayStartAndEnd() -> (start: Date, end: Date) {
+    private func getSpecificStartAndEndDate(date: Date = Date()) -> (start: Date, end: Date) {
         let calendar = Calendar.current
-        let now = Date()
+        let now = date
 
         let startOfDay = calendar.startOfDay(for: now)
         var components = DateComponents()

@@ -11,12 +11,22 @@ import RealmSwift
 
 final class ReminderTableViewCell: BaseTableViewCell {
     
+    let backView = UIView()
+    
+    let contentStackView: UIStackView = {
+        let object = UIStackView()
+        object.axis = .horizontal
+        object.spacing = 10
+        return object
+    }()
+    
     let reminderImageView: UIImageView = {
         let object = UIImageView()
         object.contentMode = .scaleAspectFill
         object.clipsToBounds = true
         object.layer.cornerRadius = 4
         object.backgroundColor = .lightGray
+        object.isHidden = true
         return object
     }()
     
@@ -71,6 +81,13 @@ final class ReminderTableViewCell: BaseTableViewCell {
         return object
     }()
     
+    let tagLabel: UILabel = {
+        let object = UILabel()
+        object.font = .systemFont(ofSize: 14)
+        object.textColor = .systemBlue
+        return object
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
@@ -83,58 +100,66 @@ final class ReminderTableViewCell: BaseTableViewCell {
     override func configureHierarchy() {
         super.configureHierarchy()
         
-        contentView.addSubview(reminderImageView)
-        contentView.addSubview(stackView)
         contentView.addSubview(checkButton)
-        contentView.addSubview(flagImageView)
-        contentView.addSubview(contentLabel)
-        contentView.addSubview(dateLabel)
+        contentView.addSubview(contentStackView)
+        contentStackView.addArrangedSubview(reminderImageView)
+        contentStackView.addArrangedSubview(backView)
+        backView.addSubview(stackView)
+        backView.addSubview(contentLabel)
+        backView.addSubview(dateLabel)
+        backView.addSubview(tagLabel)
         
         stackView.addArrangedSubview(priorityImageView)
         stackView.addArrangedSubview(titleLabel)
+        
+        contentView.addSubview(flagImageView)
+        
+        
     }
     
     override func configureLayout() {
         super.configureLayout()
-        
-        reminderImageView.snp.makeConstraints { make in
-            make.leading.equalTo(checkButton.snp.trailing).offset(8)
-            make.top.equalTo(titleLabel.snp.top)
-            make.bottom.equalTo(dateLabel.snp.bottom)
-            make.height.equalToSuperview().inset(8)
-            make.width.equalTo(contentView.snp.height).multipliedBy(0.7)
-        }
-        
-        stackView.snp.makeConstraints { make in
-            make.centerY.equalTo(checkButton.snp.centerY)
-            make.leading.equalTo(reminderImageView.snp.trailing).offset(8)
-            make.trailing.equalTo(flagImageView.snp.leading).offset(-12)
-        }
-        
-        priorityImageView.snp.makeConstraints { make in
-            make.size.equalTo(16)
-        }
         
         checkButton.snp.makeConstraints { make in
             make.top.leading.equalToSuperview().inset(12)
             make.size.equalTo(30)
         }
         
-        flagImageView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(12)
-            make.top.equalTo(titleLabel.snp.top)
-            make.size.equalTo(30)
+        contentStackView.snp.makeConstraints { make in
+            make.leading.equalTo(checkButton.snp.trailing).offset(8)
+            make.verticalEdges.equalToSuperview().inset(8)
+            make.trailing.equalTo(flagImageView.snp.leading).offset(-8)
+        }
+        
+        reminderImageView.snp.makeConstraints { make in
+            make.width.equalTo(contentView.snp.height).multipliedBy(0.7)
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview()
         }
         
         contentLabel.snp.makeConstraints { make in
             make.leading.equalTo(titleLabel)
             make.top.equalTo(titleLabel.snp.bottom).offset(8)
+            make.height.equalTo(16)
         }
         
         dateLabel.snp.makeConstraints { make in
             make.leading.equalTo(titleLabel)
             make.top.equalTo(contentLabel.snp.bottom).offset(8)
             make.height.equalTo(16)
+        }
+        
+        tagLabel.snp.makeConstraints { make in
+            make.leading.equalTo(dateLabel.snp.trailing).offset(8)
+            make.top.equalTo(dateLabel.snp.top)
+        }
+        
+        flagImageView.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(12)
+            make.top.equalTo(backView.snp.top)
+            make.size.equalTo(30)
         }
     }
     
@@ -143,14 +168,24 @@ final class ReminderTableViewCell: BaseTableViewCell {
     }
     
     public func fetchData(_ item: Reminder, image: UIImage?){
-        titleLabel.text = item.title
+        
+        titleLabel.attributedText = item.isComplete ? item.title.strikeThrough() : NSAttributedString(string: item.title)
         contentLabel.text = item.content
         dateLabel.text = item.formattedDate
         checkButton.isSelected = item.isComplete
+        tagLabel.text = item.hashTaggedString
         flagImageView.image = item.isFlag ? UIImage(systemName: "flag.fill") : UIImage(systemName: "flag")
-        reminderImageView.image = image
+        
+        if image != nil {
+            reminderImageView.image = image
+            reminderImageView.isHidden = false
+        } else {
+            reminderImageView.isHidden = true
+        }
+        
         
         if let priority = item.prioirty {
+            priorityImageView.isHidden = false
             switch priority {
             case 1:
                 priorityImageView.image = UIImage(systemName: "exclamationmark")
@@ -161,6 +196,8 @@ final class ReminderTableViewCell: BaseTableViewCell {
             default:
                 priorityImageView.image = nil
             }
+        } else {
+            priorityImageView.isHidden = true
         }
     }
 }

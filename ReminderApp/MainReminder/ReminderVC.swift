@@ -65,7 +65,7 @@ final class ReminderVC: BaseVC {
         
         collectionView.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.horizontalEdges.equalToSuperview()
+            make.horizontalEdges.equalToSuperview().inset(8)
             make.bottom.equalTo(addReminderButton.snp.top).offset(-12)
         }
         
@@ -104,7 +104,9 @@ final class ReminderVC: BaseVC {
     
     @objc 
     func rightBarButtonTapped(){
-        
+        let vc = CalendarReminderVC()
+        vc.modalPresentationStyle = .overFullScreen
+        present(vc, animated: true)
     }
     
     @objc
@@ -133,7 +135,7 @@ extension ReminderVC: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = UIScreen.main.bounds.width / 2 - 10
+        let width = collectionView.bounds.width / 2 - 10
         return CGSize(width: width, height: 100)
     }
     
