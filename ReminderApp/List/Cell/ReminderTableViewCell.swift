@@ -88,6 +88,12 @@ final class ReminderTableViewCell: BaseTableViewCell {
         return object
     }()
     
+    let categoryLabel: UILabel = {
+        let object = UILabel()
+        object.font = .systemFont(ofSize: 14)
+        return object
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
@@ -102,6 +108,8 @@ final class ReminderTableViewCell: BaseTableViewCell {
         
         contentView.addSubview(checkButton)
         contentView.addSubview(contentStackView)
+        contentView.addSubview(categoryLabel)
+        
         contentStackView.addArrangedSubview(reminderImageView)
         contentStackView.addArrangedSubview(backView)
         backView.addSubview(stackView)
@@ -161,10 +169,21 @@ final class ReminderTableViewCell: BaseTableViewCell {
             make.top.equalTo(backView.snp.top)
             make.size.equalTo(30)
         }
+        
+        categoryLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(12)
+            make.bottom.equalTo(contentView.snp.bottom).offset(-12)
+        }
     }
     
     override func configureUI() {
         super.configureUI()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        reminderImageView.image = nil
+        priorityImageView.image = nil
     }
     
     public func fetchData(_ item: Reminder, image: UIImage?){
@@ -175,6 +194,7 @@ final class ReminderTableViewCell: BaseTableViewCell {
         checkButton.isSelected = item.isComplete
         tagLabel.text = item.hashTaggedString
         flagImageView.image = item.isFlag ? UIImage(systemName: "flag.fill") : UIImage(systemName: "flag")
+        categoryLabel.text = item.category.first?.name
         
         if image != nil {
             reminderImageView.image = image
@@ -187,17 +207,15 @@ final class ReminderTableViewCell: BaseTableViewCell {
         if let priority = item.prioirty {
             priorityImageView.isHidden = false
             switch priority {
-            case 1:
-                priorityImageView.image = UIImage(systemName: "exclamationmark")
-            case 2:
-                priorityImageView.image = UIImage(systemName: "exclamationmark.2")
-            case 3:
+            case 0:
                 priorityImageView.image = UIImage(systemName: "exclamationmark.3")
+            case 1:
+                priorityImageView.image = UIImage(systemName: "exclamationmark.2")
+            case 2:
+                priorityImageView.image = UIImage(systemName: "exclamationmark.1")
             default:
                 priorityImageView.image = nil
             }
-        } else {
-            priorityImageView.isHidden = true
         }
     }
 }

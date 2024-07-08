@@ -40,6 +40,8 @@
 		B8F74E1C2C3ADE0100075BB7 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F74E1B2C3ADE0100075BB7 /* String+Extension.swift */; };
 		B8F74E1F2C3AE16D00075BB7 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B8F74E1E2C3AE16D00075BB7 /* IQKeyboardManagerSwift */; };
 		B8F74E202C3AE44800075BB7 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = B85FACC32C36189B00DD1FA7 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B8F74E272C3BA0F300075BB7 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F74E262C3BA0F300075BB7 /* CategoryTableViewCell.swift */; };
+		B8F74E292C3BA47A00075BB7 /* CategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F74E282C3BA47A00075BB7 /* CategoryVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -86,6 +88,8 @@
 		B8F74E172C3AB6E700075BB7 /* CalendarReminderVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarReminderVC.swift; sourceTree = "<group>"; };
 		B8F74E192C3ABFF200075BB7 /* CalendarListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarListTableViewCell.swift; sourceTree = "<group>"; };
 		B8F74E1B2C3ADE0100075BB7 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		B8F74E262C3BA0F300075BB7 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
+		B8F74E282C3BA47A00075BB7 /* CategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +167,7 @@
 				B85FACB42C3535AD00DD1FA7 /* TagVC.swift */,
 				B85FACB62C3535B600DD1FA7 /* PriorityVC.swift */,
 				B8F74E132C39969000075BB7 /* ReminderImageVC.swift */,
+				B8F74E282C3BA47A00075BB7 /* CategoryVC.swift */,
 			);
 			path = TaskVC;
 			sourceTree = "<group>";
@@ -172,6 +177,7 @@
 			children = (
 				B85FACBD2C3593E000DD1FA7 /* FilterCollectionViewCell.swift */,
 				B8F74E192C3ABFF200075BB7 /* CalendarListTableViewCell.swift */,
+				B8F74E262C3BA0F300075BB7 /* CategoryTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -342,6 +348,7 @@
 				B8F74E0D2C39688B00075BB7 /* ReminderRepository.swift in Sources */,
 				B8F74E142C39969000075BB7 /* ReminderImageVC.swift in Sources */,
 				B8F74E0F2C3969C300075BB7 /* Filter.swift in Sources */,
+				B8F74E272C3BA0F300075BB7 /* CategoryTableViewCell.swift in Sources */,
 				B85FAC972C34158B00DD1FA7 /* BaseVC.swift in Sources */,
 				B8F74E162C399CD500075BB7 /* FileManager+Extension.swift in Sources */,
 				B85FACA52C34262600DD1FA7 /* TaskTableViewCell.swift in Sources */,
@@ -356,6 +363,7 @@
 				B8F74E1C2C3ADE0100075BB7 /* String+Extension.swift in Sources */,
 				B871F26F2C34125E00C6CEDE /* AppDelegate.swift in Sources */,
 				B85FACB32C3535A400DD1FA7 /* DeadLinePickerVC.swift in Sources */,
+				B8F74E292C3BA47A00075BB7 /* CategoryVC.swift in Sources */,
 				B85FACAA2C343B4B00DD1FA7 /* ReminderTableViewCell.swift in Sources */,
 				B871F2712C34125E00C6CEDE /* SceneDelegate.swift in Sources */,
 				B85FACA32C34258B00DD1FA7 /* TableViewCell+Extension.swift in Sources */,

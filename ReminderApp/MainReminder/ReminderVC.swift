@@ -22,6 +22,15 @@ final class ReminderVC: BaseVC {
         return object
     }()
     
+    lazy var tableView: UITableView = {
+        let object = UITableView(frame: .zero, style: .insetGrouped)
+        object.backgroundColor = .clear
+        object.delegate = self
+        object.dataSource = self
+        object.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
+        return object
+    }()
+    
     let addReminderButton: UIButton = {
         var configure = UIButton.Configuration.plain()
         configure.title = "새로운 할 일"
@@ -41,6 +50,7 @@ final class ReminderVC: BaseVC {
     }()
     
     let repository = ReminderRepository()
+    lazy var category = repository.fetchCategory()
     lazy var list = repository.fetch()
     
     override func viewDidLoad() {
@@ -50,12 +60,14 @@ final class ReminderVC: BaseVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : UIColor.lightGray.cgColor]
+        tableView.reloadData()
         collectionView.reloadData()
     }
     
     override func configureHierarchy() {
         super.configureHierarchy()
-        view.addSubview(collectionView)
+        //view.addSubview(collectionView)
+        view.addSubview(tableView)
         view.addSubview(addReminderButton)
         view.addSubview(addCategoryButton)
     }
@@ -63,7 +75,13 @@ final class ReminderVC: BaseVC {
     override func configureLayout() {
         super.configureLayout()
         
-        collectionView.snp.makeConstraints { make in
+        //        collectionView.snp.makeConstraints { make in
+        //            make.top.equalToSuperview()
+        //            make.horizontalEdges.equalToSuperview().inset(8)
+        //            make.bottom.equalTo(addReminderButton.snp.top).offset(-12)
+        //        }
+        
+        tableView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.horizontalEdges.equalToSuperview().inset(8)
             make.bottom.equalTo(addReminderButton.snp.top).offset(-12)
@@ -102,7 +120,7 @@ final class ReminderVC: BaseVC {
         collectionView.register(FilterCollectionViewCell.self, forCellWithReuseIdentifier: FilterCollectionViewCell.identifier)
     }
     
-    @objc 
+    @objc
     func rightBarButtonTapped(){
         let vc = CalendarReminderVC()
         vc.modalPresentationStyle = .overFullScreen
@@ -114,6 +132,7 @@ final class ReminderVC: BaseVC {
         let vc = AddedReminderVC()
         vc.onDismiss = {
             self.collectionView.reloadData()
+            self.tableView.reloadData()
         }
         
         let nvc = UINavigationController(rootViewController: vc)
@@ -146,5 +165,35 @@ extension ReminderVC: UICollectionViewDelegate, UICollectionViewDataSource, UICo
             vc.list = repository.fetchForFilteredValue(filter)
             navigationController?.pushViewController(vc, animated: true)
         }
+    }
+}
+
+extension ReminderVC: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 350
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return collectionView
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return category.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.identifier, for: indexPath) as! CategoryTableViewCell
+        let data = category[indexPath.row]
+        cell.setTitle(title: data.name)
+        cell.detailTextLabel?.text = "\(data.list.count)"
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = ListReminderVC()
+        vc.list = list.where{$0.category.name == category[indexPath.row].name }
+        vc.navigationItem.title = category[indexPath.row].name
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

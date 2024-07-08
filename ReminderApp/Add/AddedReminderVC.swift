@@ -15,6 +15,7 @@ protocol PassDataDelegate {
     func passTagValue(_ tag: String?)
     func passPriorityValue(_ priority: Priority)
     func passImageValue(_ image: UIImage?)
+    func passCategory(_ category: Category)
 }
 
 final class AddedReminderVC: BaseVC {
@@ -24,6 +25,7 @@ final class AddedReminderVC: BaseVC {
         case tag
         case priority
         case image
+        case category
         
         var title: String {
             switch self {
@@ -35,6 +37,8 @@ final class AddedReminderVC: BaseVC {
                 return "우선순위"
             case .image:
                 return "이미지추가"
+            case .category:
+                return "카테고리 추가"
             }
         }
     }
@@ -88,6 +92,7 @@ final class AddedReminderVC: BaseVC {
     var priority: Priority?
     var image: UIImage?
     var onDismiss: (() -> Void)?
+    var category: Category?
     
     //MARK: - method
     override func viewDidLoad() {
@@ -184,7 +189,7 @@ final class AddedReminderVC: BaseVC {
                                 deadline: deadLineDate, tag: tag, priority: priority?.rawValue)
         
         //default.realm에 레코드 추가
-        repository.addItem(item: reminder) { [weak self] error in
+        repository.addItem(item: reminder, category: category) { [weak self] error in
             guard let self else { return }
             guard error == nil else {
                 showAlert(title: "오류", message: "저장하는데 오류가 생겼습니다.", ok: "확인"){ }
@@ -245,6 +250,8 @@ extension AddedReminderVC: UITableViewDelegate, UITableViewDataSource {
             cell.detailTextLabel?.text = priority?.title
         case 3:
             cell.detailTextLabel?.text = image != nil ? "이미지 추가됨" : ""
+        case 4:
+            cell.detailTextLabel?.text = category?.name ?? ""
         default:
             break
         }
@@ -272,6 +279,11 @@ extension AddedReminderVC: UITableViewDelegate, UITableViewDataSource {
             let vc = ReminderImageVC()
             vc.delegate = self
             vc.setData(image)
+            navigationController?.pushViewController(vc, animated: true)
+        case 4:
+            let vc = CategoryVC()
+            vc.delegate = self
+            vc.setData(category)
             navigationController?.pushViewController(vc, animated: true)
         default:
             return
@@ -307,6 +319,11 @@ extension AddedReminderVC: PassDataDelegate {
     
     func passPriorityValue(_ priority: Priority) {
         self.priority = priority
+        tableView.reloadData()
+    }
+    
+    func passCategory(_ category: Category) {
+        self.category = category
         tableView.reloadData()
     }
 }

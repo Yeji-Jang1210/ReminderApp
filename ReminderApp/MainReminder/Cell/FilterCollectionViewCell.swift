@@ -90,11 +90,6 @@ class FilterCollectionViewCell: UICollectionViewCell {
         }
     }
     
-//    override func layoutSubviews() {
-//        super.layoutSubviews()
-//        imageBackView.layer.cornerRadius = imageBackView.bounds.width / 2
-//    }
-    
     //MARK: - function
     public func setData(_ filter: Filter, count: Int){
         imageBackView.backgroundColor = filter.tintColor

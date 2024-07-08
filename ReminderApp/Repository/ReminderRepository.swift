@@ -21,7 +21,7 @@ enum ReminderRepositoryError: Error {
 
 protocol ReminderRepositoryProtocol {
     // Create
-    func addItem(item: Reminder, completion: @escaping ((ReminderRepositoryError?)->Void))
+    func addItem(item: Reminder, category: Category?, completion: @escaping ((ReminderRepositoryError?)->Void))
     
     // Read
     func fetch() -> Results<Reminder>
@@ -38,10 +38,15 @@ class ReminderRepository: ReminderRepositoryProtocol {
     
     private let realm = try! Realm()
     
-    func addItem(item: Reminder, completion: @escaping ((ReminderRepositoryError?)->Void)) {
+    func addItem(item: Reminder, category: Category?, completion: @escaping ((ReminderRepositoryError?)->Void)) {
         do{
             try realm.write{
-                realm.add(item)
+                if let category = category {
+                    category.list.append(item)
+                } else {
+                    realm.add(item)
+                }
+                
                 completion(nil)
             }
         } catch {
@@ -77,8 +82,13 @@ class ReminderRepository: ReminderRepositoryProtocol {
         }
     }
     
+    func sortReminder(_ type: SortType) -> Results<Reminder>{
+        let list = realm.objects(Reminder.self)
+        return list.sorted(byKeyPath: type.keyPath, ascending: true)
+    }
+    
     func fetchFilterForDate(_ date: Date = Date()) -> Results<Reminder> {
-        let list = fetch()
+        let list = realm.objects(Reminder.self)
         let (startDate, endDate) = getSpecificStartAndEndDate(date: date)
         
         return list.filter("deadline >= %@ AND deadline <= %@", startDate, endDate)
@@ -109,5 +119,20 @@ class ReminderRepository: ReminderRepositoryProtocol {
         let endOfDay = calendar.date(byAdding: components, to: startOfDay)!
 
         return (startOfDay, endOfDay)
+    }
+}
+
+extension ReminderRepository {
+    func fetchCategory() -> Results<Category> {
+        return realm.objects(Category.self)
+    }
+    
+    func findCategoryIndex(_ category: Category) -> Int? {
+        let categories = fetchCategory()
+        
+        if let index = categories.index(matching: "name == %@", category.name) {
+            return index
+        }
+        return nil
     }
 }

@@ -9,30 +9,30 @@ import UIKit
 import SnapKit
 import RealmSwift
 
-class ListReminderVC: BaseVC {
+enum SortType: CaseIterable {
+    case deadline
+    case title
     
-    enum FilterType: CaseIterable {
-        case deadline
-        case title
-        
-        var title: String {
-            switch self {
-            case .deadline:
-                return "마감일 순으로 보기"
-            case .title:
-                return "제목 순으로 보기"
-            }
-        }
-        
-        var keyPath: String {
-            switch self {
-            case .deadline:
-                return "deadline"
-            case .title:
-                return "title"
-            }
+    var title: String {
+        switch self {
+        case .deadline:
+            return "마감일 순으로 보기"
+        case .title:
+            return "제목 순으로 보기"
         }
     }
+    
+    var keyPath: String {
+        switch self {
+        case .deadline:
+            return "deadline"
+        case .title:
+            return "title"
+        }
+    }
+}
+
+class ListReminderVC: BaseVC {
     
     lazy var searchBar: UISearchBar = {
         let object = UISearchBar()
@@ -48,12 +48,12 @@ class ListReminderVC: BaseVC {
     }()
     
     var repository = ReminderRepository()
-    var filter: Filter!
+    var filter: Filter?
     var list: Results<Reminder>!
-    var filteredList: Results<Reminder>!
-    var filterType: FilterType? {
+    lazy var filteredList: Results<Reminder> = list
+    var sort: SortType? {
         didSet {
-            if let type = filterType {
+            if let type = sort {
                 filteredList = list.sorted(byKeyPath: type.keyPath, ascending: true)
                 tableView.reloadData()
             }
@@ -97,8 +97,8 @@ class ListReminderVC: BaseVC {
     }
     
     private func configureNavigationBar(){
-        navigationItem.title = filter.title
-        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : filter.tintColor]
+        navigationItem.title = filter?.title ?? navigationItem.title
+        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : filter?.tintColor ?? UIColor.label]
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
@@ -120,9 +120,9 @@ class ListReminderVC: BaseVC {
         
         var actionList: [UIAlertAction] = []
         
-        for filter in FilterType.allCases {
+        for filter in SortType.allCases {
             let action = UIAlertAction(title: filter.title, style: .default) { _ in
-                self.filterType = filter
+                self.sort = filter
             }
             actionList.append(action)
         }
@@ -145,7 +145,7 @@ class ListReminderVC: BaseVC {
 
 extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 120
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -156,7 +156,6 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReminderTableViewCell.identifier, for: indexPath) as! ReminderTableViewCell
         
         let item = filteredList[indexPath.row]
-        print(item.id.stringValue, item.title)
         cell.fetchData(item, image: loadImageToDocument(filename: item.id.stringValue))
         cell.checkButton.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
         cell.checkButton.tag = indexPath.row
@@ -176,8 +175,7 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
         
         let flag = UIContextualAction(style: .normal, title: "깃발") { [self] (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
             
-            repository.updateFlag(item: item){ [weak self] in
-                guard let self else { return }
+            repository.updateFlag(item: item){
                 tableView.reloadRows(at: [IndexPath(row: indexPath.row, section: 0)], with: .automatic)
                 success(true)
             }
@@ -188,7 +186,7 @@ extension ListReminderVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = DetailReminderInfoVC()
-        vc.reminder = filteredList?[indexPath.row]
+        vc.reminder = filteredList[indexPath.row]
         present(vc, animated: true)
     }
 }

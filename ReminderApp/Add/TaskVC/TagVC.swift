@@ -9,9 +9,10 @@ import UIKit
 import SnapKit
 
 class TagVC: BaseVC {
-    let tagTextField: UITextField = {
+    lazy var tagTextField: UITextField = {
         let object = UITextField()
-        object.placeholder = "태그를 입력해 주세요."
+        object.placeholder = "태그를 5글자 이내로 입력해 주세요."
+        object.delegate = self
         return object
     }()
     
@@ -41,5 +42,18 @@ class TagVC: BaseVC {
     
     public func setData(_ tag: String?){
         tagTextField.text = tag
+    }
+}
+
+extension TagVC: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let char = string.cString(using: String.Encoding.utf8) {
+            let isBackSpace = strcmp(char, "\\b")
+            if (isBackSpace == -92) {
+                return true
+            }
+        }
+        
+        return textField.text!.count >= 5 ? false : true
     }
 }

@@ -19,9 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IQKeyboardManager.shared.resignOnTouchOutside = true
         
         
-        let config = Realm.Configuration(schemaVersion: 2){ migration, oldVersion in
+        let config = Realm.Configuration(schemaVersion: 3){ migration, oldVersion in
             if oldVersion < 1 {
                 
+            }
+            
+            if oldVersion < 3 {
+                //Reminder-> linkingobject추가
             }
         }
         

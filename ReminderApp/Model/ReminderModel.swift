@@ -8,7 +8,12 @@
 import Foundation
 import RealmSwift
 
-
+class Category: Object {
+    @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted(indexed: true) var name: String
+    
+    @Persisted var list: List<Reminder>
+}
 
 class Reminder: Object {
     @Persisted(primaryKey: true) var id: ObjectId
@@ -19,6 +24,8 @@ class Reminder: Object {
     @Persisted var prioirty: Int?
     @Persisted var isComplete: Bool
     @Persisted var isFlag: Bool
+    
+    @Persisted(originProperty: "list") var category: LinkingObjects<Category>
     
     convenience init(title: String, content: String?, deadline: Date? = Date(), tag: String? = nil, priority: Int? = nil, isComplete: Bool = false, isFlag: Bool = false) {
         self.init()
