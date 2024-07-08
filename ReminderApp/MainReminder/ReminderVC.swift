@@ -99,7 +99,7 @@ final class ReminderVC: BaseVC {
     private func configureCollectionView(){
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier)
+        collectionView.register(FilterCollectionViewCell.self, forCellWithReuseIdentifier: FilterCollectionViewCell.identifier)
     }
     
     @objc 
@@ -123,13 +123,13 @@ final class ReminderVC: BaseVC {
 
 extension ReminderVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Category.allCases.count
+        return Filter.allCases.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCollectionViewCell.identifier, for: indexPath) as! CategoryCollectionViewCell
-        if let category = Category(rawValue: indexPath.row) {
-            cell.setData(category, count: repository.fetchFilterForCategory(category).count)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.identifier, for: indexPath) as! FilterCollectionViewCell
+        if let filter = Filter(rawValue: indexPath.row) {
+            cell.setData(filter, count: repository.fetchForFilteredValue(filter).count)
         }
         return cell
     }
@@ -140,10 +140,10 @@ extension ReminderVC: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let category = Category(rawValue: indexPath.row) {
+        if let filter = Filter(rawValue: indexPath.row) {
             let vc = ListReminderVC()
-            vc.category = category
-            vc.list = repository.fetchFilterForCategory(category)
+            vc.filter = filter
+            vc.list = repository.fetchForFilteredValue(filter)
             navigationController?.pushViewController(vc, animated: true)
         }
     }

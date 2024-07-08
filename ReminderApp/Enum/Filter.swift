@@ -1,5 +1,5 @@
 //
-//  Category.swift
+//  Filter.swift
 //  ReminderApp
 //
 //  Created by 장예지 on 7/6/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum Category: Int, CaseIterable {
+enum Filter: Int, CaseIterable {
     case today
     case expected
     case all

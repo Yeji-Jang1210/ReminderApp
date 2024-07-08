@@ -1,5 +1,5 @@
 //
-//  CategoryCollectionViewCell.swift
+//  FilterCollectionViewCell.swift
 //  ReminderApp
 //
 //  Created by 장예지 on 7/3/24.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class CategoryCollectionViewCell: UICollectionViewCell {
+class FilterCollectionViewCell: UICollectionViewCell {
     
     let backView: UIView = {
         let object = UIView()
@@ -96,10 +96,10 @@ class CategoryCollectionViewCell: UICollectionViewCell {
 //    }
     
     //MARK: - function
-    public func setData(_ category: Category, count: Int){
-        imageBackView.backgroundColor = category.tintColor
-        imageView.image = category.image
-        titleLabel.text = category.title
+    public func setData(_ filter: Filter, count: Int){
+        imageBackView.backgroundColor = filter.tintColor
+        imageView.image = filter.image
+        titleLabel.text = filter.title
         remindeCountLabel.text = String(count)
     }
 }

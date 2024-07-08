@@ -59,7 +59,7 @@ class ReminderRepository: ReminderRepositoryProtocol {
         }
     }
     
-    func fetchFilterForCategory(_ filter: Category) -> Results<Reminder> {
+    func fetchForFilteredValue(_ filter: Filter) -> Results<Reminder> {
         let list = fetch()
 
         switch filter {

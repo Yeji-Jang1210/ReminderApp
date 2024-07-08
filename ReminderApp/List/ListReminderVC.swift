@@ -48,7 +48,7 @@ class ListReminderVC: BaseVC {
     }()
     
     var repository = ReminderRepository()
-    var category: Category!
+    var filter: Filter!
     var list: Results<Reminder>!
     var filteredList: Results<Reminder>!
     var filterType: FilterType? {
@@ -97,8 +97,8 @@ class ListReminderVC: BaseVC {
     }
     
     private func configureNavigationBar(){
-        navigationItem.title = category.title
-        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : category.tintColor]
+        navigationItem.title = filter.title
+        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor : filter.tintColor]
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
